@@ -1,0 +1,24 @@
+<fieldset>
+  <legend>设置</legend>
+  <p>
+    <label>问题添加通知.</label>
+    <%= check_box_tag 'settings[add_notify]', true, @settings[:add_notify] %>
+  </p>
+  <p>
+    <label>问题编辑通知.</label>
+    <%= check_box_tag 'settings[edit_notify]', true, @settings[:edit_notify] %>
+  </p>
+  <p>
+    <label>消息通知api.</label>
+    <%= text_field_tag 'settings[msg_api_url]', @settings[:msg_api_url] %>
+  </p>
+  <p>目前仅支持basic-auth认证模式</p>
+  <p>
+    <label>用户名.</label>
+    <%= text_field_tag 'settings[user]', @settings[:user] %>
+  </p>
+  <p>
+    <label>密码.</label>
+    <%= text_field_tag 'settings[password]', @settings[:password] %>
+  </p>
+</fieldset>
