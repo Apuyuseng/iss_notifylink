@@ -33,15 +33,27 @@ class MSGIssueHook < Redmine::Hook::ViewListener
 	
 	def send_msg(issue, title, content, issueUrl)
 		userAry = ([issue.assigned_to] | issue.watcher_users).select{ |u| u.respond_to? :login }
+                Rails.logger.info userAry
 		return if userAry.empty?
-		msgAry = userAry.map(&:login)
+	        #msgAry = userAry.map(&:login)
+                msgAry = []
+                userAry.map do |e| if e.type=="Group"
+		           msgAry.concat(e.users.map(&:login)) 
+                           #Rails.logger.info e.users.map(&:login)
+                       else
+                           msgAry.concat([e.login]) #追加
+                       end
+                end
+                msgAry.uniq!
+                
 		# Modify these liens yourself to change the title style.
 		#subject = to_msg_str(issue_heading(issue))
 		subject = to_msg_str("(#{issue.status.name}) ##{issue.id} #{issue.subject}")
 		content = to_msg_str(content)
 		msg = "[#{subject} |#{issueUrl}]\n#{content}"
-	    param = {:receivers => msgAry, :title => title, :message => msg, :receiver_type => :badge}
-		self.class.call_msg(param)
+	        param = {:receivers => msgAry, :title => title, :message => msg, :receiver_type => :badge}
+		Rails.logger.info param
+                self.class.call_msg(param)
 	end
 	
 	def redmine_url(param)
